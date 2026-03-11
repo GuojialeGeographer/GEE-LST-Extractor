@@ -5,7 +5,13 @@
       "mcp__zread__search_doc",
       "Bash(git init:*)",
       "Bash(git branch:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo:*)",
+      "Bash(git push:*)",
+      "Bash(gh auth:*)",
+      "Bash(python test_framework.py)",
+      "Bash(python -c \"from uuid import NAMESPACE_DNS; print\\('NAMESPACE_DNS imported successfully'\\)\")"
     ]
   }
 }

@@ -1,0 +1,159 @@
+# GEE通用环境数据提取框架 - 数据源配置文件
+#
+# 用途：配置所有支持的环境数据源
+# 说明：设置 enabled: true 来启用数据源
+
+data_sources:
+  # ========== Landsat系列 ==========
+
+  LST:
+    enabled: true
+    extractor: lst_extractor.LSTExtractor
+    description: "Land Surface Temperature from Landsat 8/9"
+    parameters:
+      use_landsat_9: true
+    output:
+      column_name: "LST"
+      unit: "Celsius"
+    quality:
+      temporal_windows: [0, 7, 15, 30]
+      spatial_buffers: [0, 1000, 3000, 5000]
+
+  NDVI:
+    enabled: true
+    extractor: ndvi_extractor.NDVIExtractor
+    description: "Normalized Difference Vegetation Index from Landsat 8/9"
+    parameters:
+      use_landsat_9: true
+      temporal_reducer: "median"  # mean, median, max, min
+    output:
+      column_name: "NDVI"
+      unit: "unitless"
+    quality:
+      temporal_windows: [0, 7, 15, 30]
+      spatial_buffers: [0, 1000, 3000]
+
+  # ========== MODIS系列 ==========
+
+  PM25:
+    enabled: false
+    extractor: pm25_extractor.PM25Extractor
+    description: "PM2.5 concentration from MODIS"
+    parameters:
+      data_source: "MODIS"  # MODIS or Sentinel5P
+      conversion_factor: 1.5
+    output:
+      column_name: "PM25"
+      unit: "µg/m³"
+    quality:
+      temporal_windows: [0, 1, 3, 7]
+
+  # ========== 气象数据 ==========
+
+  Precipitation:
+    enabled: false
+    extractor: precipitation_extractor.PrecipitationExtractor
+    description: "Precipitation from GPM"
+    parameters:
+      product: "IMERG"
+      temporal_aggregation: "monthly"
+    output:
+      column_name: "precipitation"
+      unit: "mm"
+
+  # ========== 社会经济数据 ==========
+
+  Population:
+    enabled: false
+    extractor: population_extractor.PopulationExtractor
+    description: "Population density from WorldPop"
+    parameters:
+      year: 2020
+      resolution: "100m"
+    output:
+      column_name: "population_density"
+      unit: "people/km²"
+
+  NightLights:
+    enabled: false
+    extractor: nightlights_extractor.NightLightsExtractor
+    description: "Nighttime lights from VIIRS"
+    parameters:
+      product: "VCMFG"
+      monthly: true
+    output:
+      column_name: "night_lights"
+      unit: "nanoWatts/cm²/sr"
+
+  # ========== 地形数据 ==========
+
+  Elevation:
+    enabled: false
+    extractor: elevation_extractor.ElevationExtractor
+    description: "Elevation from SRTM"
+    output:
+      column_name: "elevation"
+      unit: "meters"
+
+  # ========== 土地覆盖 ==========
+
+  LandCover:
+    enabled: false
+    extractor: landcover_extractor.LandCoverExtractor
+    description: "Land cover from ESA WorldCover"
+    parameters:
+      classification: "ESA"  # ESA or MODIS
+    output:
+      column_name: "landcover_class"
+      unit: "class_code"
+
+# ========== 全局设置 ==========
+
+global_settings:
+  # 并行处理
+  parallel:
+    enabled: true
+    max_workers: 3  # GEE建议不超过3
+
+  # 批处理
+  batch:
+    points_per_task: 5000  # 每个GEE任务的点数
+    delay_between_tasks: 3  # 任务之间的延迟（秒）
+
+  # 输出设置
+  output:
+    format: "csv"  # csv, geojson, parquet
+    include_metadata: true
+    include_quality_flags: true  # 是否包含质量标记
+    compression: false
+
+  # 质量控制
+  quality:
+    apply_filling_strategies: true  # 是否应用填充策略
+    filling_priority:  # 填充策略的优先级
+      - extended_temporal      # 1. 扩大时间窗口
+      - spatial_neighbors      # 2. 空间邻近性
+      - temporal_interp        # 3. 时空插值
+      - regional_mean          # 4. 区域均值
+
+  # 网格化设置
+  grid:
+    precision: 4  # 经纬度精度（小数位数）
+                 # 3 ≈ 111米
+                 # 4 ≈ 11米 (推荐)
+                 # 5 ≈ 1米
+
+# ========== 说明 ==========
+
+# 如何启用数据源：
+# 1. 将对应的 enabled 设置为 true
+# 2. 如果需要，调整参数
+# 3. 重新运行提取
+
+# 如何禁用数据源：
+# 将对应的 enabled 设置为 false
+
+# 添加新数据源：
+# 1. 在 extractors/ 目录创建新的提取器类
+# 2. 在此处添加配置
+# 3. 设置 enabled: true
