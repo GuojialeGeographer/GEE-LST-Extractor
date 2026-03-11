@@ -1,0 +1,23 @@
+# Pip依赖包
+# 使用方法: pip install -r requirements.txt
+
+# Google Earth Engine
+earthengine-api>=0.1.300
+
+# 地理分析
+geemap>=0.1.250
+
+# 数据处理
+numpy>=1.21.0
+pandas>=1.3.0
+
+# 进度条
+tqdm>=4.62.0
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# 可视化
+matplotlib>=3.4.0
+seaborn>=0.11.0
