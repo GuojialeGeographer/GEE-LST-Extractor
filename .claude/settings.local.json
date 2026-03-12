@@ -11,7 +11,11 @@
       "Bash(git push:*)",
       "Bash(gh auth:*)",
       "Bash(python test_framework.py)",
-      "Bash(python -c \"from uuid import NAMESPACE_DNS; print\\('NAMESPACE_DNS imported successfully'\\)\")"
+      "Bash(python -c \"from uuid import NAMESPACE_DNS; print\\('NAMESPACE_DNS imported successfully'\\)\")",
+      "Bash(python test_complete_system.py)",
+      "Bash(/tmp/final_summary.txt:*)",
+      "Read(//tmp/**)",
+      "Bash(python << 'EOF'\nimport json\n\n# 读取Notebook\nwith open\\('LST_Tools_Master.ipynb', 'r', encoding='utf-8'\\) as f:\n    nb = json.load\\(f\\)\n\nprint\\(\"🔍 查找剩余的MODIS/006...\"\\)\n\nfor i, cell in enumerate\\(nb['cells']\\):\n    source = ''.join\\(cell['source']\\)\n    if 'MODIS/006/' in source:\n        print\\(f\"\\\\n单元格 {i}:\"\\)\n        print\\(f\"类型: {cell['cell_type']}\"\\)\n        print\\(\"内容预览:\"\\)\n        # 显示包含MODIS/006的行\n        for line_num, line in enumerate\\(source.split\\('\\\\n'\\)\\):\n            if 'MODIS/006/' in line:\n                print\\(f\"  行{line_num}: {line.strip\\(\\)}\"\\)\n        \n        # 检查是否在快速参考表格中\n        if 'MODIS/006/MOD11A2' in source:\n            print\\(\"\\\\n这是在快速参考表格中，需要更新\"\\)\n            new_source = source.replace\\('MODIS/006/MOD11A2', 'MODIS/061/MOD11A2'\\)\n            new_source = new_source.replace\\('MODIS/006/MOD13Q1', 'MODIS/061/MOD13Q1'\\)\n            new_source = new_source.replace\\('MODIS/006/MCD43A3', 'MODIS/061/MCD43A3'\\)\n            cell['source'] = new_source.split\\('\\\\n'\\)\n            print\\(f\"✅ 单元格 {i}: 已更新表格中的数据集版本\"\\)\n\n# 保存更新\nwith open\\('LST_Tools_Master.ipynb', 'w', encoding='utf-8'\\) as f:\n    json.dump\\(nb, f, indent=1, ensure_ascii=False\\)\n\n# 最终验证\nprint\\(\"\\\\n🔍 最终验证...\"\\)\nwith open\\('LST_Tools_Master.ipynb', 'r', encoding='utf-8'\\) as f:\n    nb_verify = json.load\\(f\\)\n\nmodis_061_count = sum\\(1 for cell in nb_verify['cells'] if 'MODIS/061/' in ''.join\\(cell['source']\\)\\)\nmodis_006_count = sum\\(1 for cell in nb_verify['cells'] if 'MODIS/006/' in ''.join\\(cell['source']\\)\\)\n\nprint\\(f\"\\\\n📊 最终验证:\"\\)\nprint\\(f\"  MODIS/061/: {modis_061_count} 处 ✅\"\\)\nprint\\(f\"  MODIS/006/: {modis_006_count} 处\"\\)\n\nif modis_006_count == 0:\n    print\\(\"\\\\n✅ 所有MODIS版本已成功更新到061！\"\\)\nelse:\n    print\\(\"\\\\n⚠️  仍有MODIS/006未更新\"\\)\n\nEOF)"
     ]
   }
 }
