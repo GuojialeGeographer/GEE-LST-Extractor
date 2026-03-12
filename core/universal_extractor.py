@@ -14,6 +14,8 @@ from core.grid_manager import GridManager
 from core.batch_manager import BatchManager
 from core.quality_tracker import QualityTracker
 from core.base_extractor import BaseExtractor
+from core.gee_helper import GEEHelper
+import numpy as np
 
 
 class UniversalExtractor:
@@ -291,13 +293,12 @@ class UniversalExtractor:
                               month: int,
                               city: Optional[str] = None) -> pd.DataFrame:
         """
-        提取单个数据源
+        提取单个数据源（真正的GEE集成）
 
         包括：
-        1. 批次划分
-        2. GEE数据提取
-        3. 质量填充
-        4. 添加元数据
+        1. 使用GEEHelper进行批量提取
+        2. 质量标记
+        3. 填充策略
 
         Args:
             extractor: 提取器实例
@@ -309,25 +310,18 @@ class UniversalExtractor:
         Returns:
             pd.DataFrame: 提取结果
         """
+        print(f"  正在提取{extractor.get_band_name()}...")
+
+        # 使用GEEHelper进行真正的数据提取
+        result_df = GEEHelper.batch_extract(
+            extractor=extractor,
+            points_df=points_df,
+            year=year,
+            month=month,
+            batch_size=100  # 每批100个点，避免超时
+        )
+
         col_name = extractor.get_band_name()
-        result_df = points_df.copy()
-
-        # 初始化值为NaN
-        result_df[col_name] = np.nan
-
-        # 这里应该调用GEE进行实际提取
-        # 简化版：假设已经提取完成
-        # 实际应用中需要：
-        # 1. 创建GEE任务
-        # 2. 等待任务完成
-        # 3. 下载结果
-        # 4. 解析并合并
-
-        # 占位符：随机生成一些值用于演示
-        import random
-        for idx in result_df.index:
-            if random.random() > 0.1:  # 90%覆盖率
-                result_df.loc[idx, col_name] = random.uniform(15, 35)
 
         # 添加质量标记
         if self.config_manager.get_output_config().get('include_quality_flags', True):
