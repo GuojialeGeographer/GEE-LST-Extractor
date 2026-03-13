@@ -1,0 +1,72 @@
+{
+  "LST": {
+    "collection": "MODIS/061/MOD11A2",
+    "band": "LST_Day_1km",
+    "scale": 1000,
+    "name": "地表温度",
+    "description": "MODIS Terra地表温度8天合成产品",
+    "time_range": {
+      "start": "2000-02-24",
+      "end": "present"
+    },
+    "scaling_factor": 0.02,
+    "offset": -273.15,
+    "unit": "Celsius"
+  },
+  "NDVI": {
+    "collection": "MODIS/061/MOD13Q1",
+    "band": "NDVI",
+    "scale": 250,
+    "name": "归一化植被指数",
+    "description": "MODIS Terra植被指数16天合成产品",
+    "time_range": {
+      "start": "2000-02-18",
+      "end": "present"
+    },
+    "scaling_factor": 0.0001,
+    "offset": 0,
+    "unit": "index"
+  },
+  "EVI": {
+    "collection": "MODIS/061/MOD13Q1",
+    "band": "EVI",
+    "scale": 250,
+    "name": "增强植被指数",
+    "description": "MODIS Terra增强植被指数16天合成产品",
+    "time_range": {
+      "start": "2000-02-18",
+      "end": "present"
+    },
+    "scaling_factor": 0.0001,
+    "offset": 0,
+    "unit": "index"
+  },
+  "Albedo": {
+    "collection": "MODIS/061/MCD43A3",
+    "band": "Albedo_WSA_shortwave",
+    "scale": 500,
+    "name": "反照率",
+    "description": "MODIS双向反射分布函数和反照率产品",
+    "time_range": {
+      "start": "2000-02-24",
+      "end": "present"
+    },
+    "scaling_factor": 0.001,
+    "offset": 0,
+    "unit": "fraction"
+  },
+  "PM25": {
+    "collection": "MODIS/006/MCD19A2_GRANULES",
+    "band": "Optical_Depth_047",
+    "scale": 1000,
+    "name": "PM2.5",
+    "description": "MODIS气溶胶光学厚度",
+    "time_range": {
+      "start": "2012-01-01",
+      "end": "present"
+    },
+    "scaling_factor": 1.0,
+    "offset": 0,
+    "unit": "unknown"
+  }
+}
